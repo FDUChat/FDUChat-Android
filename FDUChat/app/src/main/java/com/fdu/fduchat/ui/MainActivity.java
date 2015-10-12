@@ -12,6 +12,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.fdu.fduchat.R;
+import com.litesuits.http.HttpConfig;
+import com.litesuits.http.LiteHttp;
+import com.litesuits.http.impl.apache.ApacheHttpClient;
+import com.litesuits.http.request.FileRequest;
+import com.litesuits.http.request.StringRequest;
+import com.litesuits.http.response.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,19 +29,19 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-        TextView tv = new TextView(this);
-        tv.setText("hello");
-        RelativeLayout rl = (RelativeLayout)findViewById(R.id.rl1);
-        rl.addView(tv);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+//        TextView tv = new TextView(this);
+//        tv.setText("hello");
+//        RelativeLayout rl = (RelativeLayout)findViewById(R.id.rl1);
+//        rl.addView(tv);
+        new Thread(new Runnable() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void run() {
+                LiteHttp client = new ApacheHttpClient(new HttpConfig(MainActivity.this));
+                Response res = client.execute(new FileRequest("http://www.baidu.com"));
+                System.out.println(res.toString());
             }
-        });
+        }).start();
+
     }
 
     @Override
