@@ -12,9 +12,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.fdu.fduchat.R;
-import com.fdu.fduchat.smart_compoent.SmartComponent;
-import com.fdu.fduchat.smart_compoent.SmartTextView;
-import com.fdu.fduchat.smart_model.Person;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,12 +23,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-//        TextView tv = new TextView(this);
-//        tv.setText("hello");
-        Person p = new Person();
-        SmartTextView tv = new SmartTextView(this);
-        p.bindComponent(tv, "setText", "name");
-        p.set("name", "Slardar");
+        TextView tv = new TextView(this);
+        tv.setText("hello");
         RelativeLayout rl = (RelativeLayout)findViewById(R.id.rl1);
         rl.addView(tv);
 
