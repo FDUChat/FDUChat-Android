@@ -10,8 +10,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.fdu.fduchat.R;
+import com.fdu.fduchat.backend.DoWork;
 import com.fdu.fduchat.message.BusProvider;
 import com.fdu.fduchat.message.MyMessage;
+import com.fdu.fduchat.message.MyWork;
 import com.fdu.fduchat.utils.Constant;
 import com.litesuits.http.HttpConfig;
 import com.litesuits.http.LiteHttp;
@@ -23,6 +25,7 @@ import com.squareup.otto.Subscribe;
 public class MainActivity extends AppCompatActivity {
 
     private TextView tv;
+    private DoWork doWork;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
         RelativeLayout rl = (RelativeLayout)findViewById(R.id.rl1);
         rl.addView(tv);
 
+        doWork = new DoWork();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -47,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
                     for (Integer i = 0; i < 5; ++i) {
                         Thread.sleep(2000);
                         BusProvider.getBus().post(new MyMessage(i));
+                        BusProvider.getBus().post(new MyWork(i));
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
