@@ -1,31 +1,22 @@
 package com.fdu.fduchat.ui;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentTabHost;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.RelativeLayout;
+import android.view.View;
+import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.fdu.fduchat.R;
-import com.fdu.fduchat.backend.DoWork;
 import com.fdu.fduchat.message.BusProvider;
 import com.fdu.fduchat.message.MyMessage;
-import com.fdu.fduchat.message.MyWork;
-import com.fdu.fduchat.utils.Constant;
-import com.litesuits.http.HttpConfig;
-import com.litesuits.http.LiteHttp;
-import com.litesuits.http.impl.apache.ApacheHttpClient;
-import com.litesuits.http.request.FileRequest;
-import com.litesuits.http.response.Response;
 import com.squareup.otto.Subscribe;
 
 public class MainActivity extends AppCompatActivity {
-
-    private TextView tv;
-    private DoWork doWork;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,31 +26,59 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-        tv = new TextView(this);
-        tv.setText("hello");
-        RelativeLayout rl = (RelativeLayout)findViewById(R.id.rl1);
-        rl.addView(tv);
+        initView();
+//        tv = new TextView(this);
+//        tv.setText("hello");
+//        RelativeLayout rl = (RelativeLayout)findViewById(R.id.rl1);
+//        rl.addView(tv);
+//
+//        doWork = new DoWork();
+//
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                LiteHttp client = new ApacheHttpClient(new HttpConfig(MainActivity.this));
+//                Response res = client.execute(new FileRequest("http://www.baidu.com"));
+//                Log.d(Constant.LOG_TAG, res.toString());
+//                try {
+//                    for (Integer i = 0; i < 5; ++i) {
+//                        Thread.sleep(2000);
+//                        BusProvider.getBus().post(new MyMessage(i));
+//                        BusProvider.getBus().post(new MyWork(i));
+//                    }
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
 
-        doWork = new DoWork();
+    }
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                LiteHttp client = new ApacheHttpClient(new HttpConfig(MainActivity.this));
-                Response res = client.execute(new FileRequest("http://www.baidu.com"));
-                Log.d(Constant.LOG_TAG, res.toString());
-                try {
-                    for (Integer i = 0; i < 5; ++i) {
-                        Thread.sleep(2000);
-                        BusProvider.getBus().post(new MyMessage(i));
-                        BusProvider.getBus().post(new MyWork(i));
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+    private FragmentTabHost mTabHost;
 
+    private LayoutInflater layoutInflater;
+
+    private Class fragmentClasses[] = {
+            ChatFragment.class,
+            FriendFragment.class,
+            DiscoverFragment.class,
+            MeFragment.class
+    };
+
+    private String fragmentNames[] = {"Chat", "Friend", "Discover", "Me"};
+
+    private void initView(){
+        layoutInflater = LayoutInflater.from(this);
+
+        mTabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
+        mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
+
+        int count = fragmentClasses.length;
+
+        for(int i = 0; i < count; i++){
+            TabHost.TabSpec tabSpec = mTabHost.newTabSpec(fragmentNames[i]).setIndicator(fragmentNames[i]);
+            mTabHost.addTab(tabSpec, fragmentClasses[i], null);
+        }
     }
 
     @Override
@@ -86,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Subscribe
     public void updateTextView(MyMessage m) {
-        tv.setText(m.i.toString());
     }
 
     @Override

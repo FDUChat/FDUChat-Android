@@ -1,0 +1,5 @@
+HTTP framework:
+http://litesuits.com/guide/http/intro.html
+
+Message framework:
+http://square.github.io/otto/
