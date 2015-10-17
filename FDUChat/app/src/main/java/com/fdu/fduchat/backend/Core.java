@@ -11,7 +11,11 @@ import android.widget.Toast;
 
 import com.fdu.fduchat.message.BusProvider;
 import com.fdu.fduchat.message.CreateUserResult;
+import com.fdu.fduchat.message.GetContactsResult;
 import com.fdu.fduchat.message.LoginResult;
+import com.fdu.fduchat.message.PutContactsResult;
+import com.fdu.fduchat.model.Contacts;
+import com.fdu.fduchat.model.Group;
 import com.fdu.fduchat.model.User;
 import com.fdu.fduchat.ui.LoginActivity;
 import com.fdu.fduchat.ui.MainActivity;
@@ -50,6 +54,21 @@ public class Core {
     }
 
     public Core() {
+        Group g1 = new Group();
+        g1.group_name = "school";
+        g1.friends.add("slardar1");
+        g1.friends.add("slardar2");
+        g1.friends.add("slardar3");
+        Group g2 = new Group();
+        g2.group_name = "home";
+        g2.friends.add("slardar4");
+        g2.friends.add("slardar5");
+        g2.friends.add("slardar6");
+        g2.friends.add("slardar7");
+        Contacts contacts = new Contacts();
+        contacts.contacts.add(g1);
+        contacts.contacts.add(g2);
+        customData.put(Constant.CUSTOM_DATA_KEY_CONTACTS, contacts);
     }
 
     public void init(Context context) {
@@ -70,7 +89,7 @@ public class Core {
 
 
     class CreateUser implements Runnable {
-        User u;
+        private User u;
         public CreateUser(User u) {
             this.u = u;
         }
@@ -97,7 +116,7 @@ public class Core {
     }
 
     class Login implements Runnable {
-        User u;
+        private User u;
         public Login(User u) {
             this.u = u;
         }
@@ -122,6 +141,62 @@ public class Core {
     }
     public void login(User u) {
         new Thread(new Login(u)).start();
+    }
+
+    class GetContacts implements Runnable {
+
+        private User u;
+        public GetContacts(User u) {
+            this.u = u;
+        }
+
+        @Override
+        public void run() {
+            JsonRequest<GetContactsResult> req = new JsonRequest(
+                    Constant.SERVER_GET_CONTACTS + "/" + u.username + "/contacts",
+                    GetContactsResult.class
+            );
+            GetContactsResult r = client.get(req);
+            if (r == null) {
+                return;
+            }
+            BusProvider.getBus().post(r);
+//            Response res = client.execute(req);
+//            Log.d(Constant.LOG_TAG, res.toString());
+        }
+    }
+    public void getContacts(User u) {
+        new Thread(new GetContacts(u)).start();
+    }
+
+    class PutContacts implements Runnable {
+
+        private Contacts c;
+        private User u;
+
+        public PutContacts(User u, Contacts c) {
+            this.u = u;
+            this.c = c;
+        }
+
+        @Override
+        public void run() {
+            JsonRequest<PutContactsResult> req = new JsonRequest(
+                    Constant.SERVER_GET_CONTACTS + "/" + u.username + "/contacts",
+                    PutContactsResult.class
+            );
+            req.setHttpBody(new JsonBody(c));
+
+            req.setMethod(HttpMethods.Put);
+            Response res = client.execute(req);
+            Log.d(Constant.LOG_TAG, res.toString());
+//            PutContactsResult r = client.put(req);
+//            Log.d(Constant.LOG_TAG, r.id.toString());
+//            BusProvider.getBus().post(r);
+        }
+    }
+    public void putContacts(User u, Contacts c) {
+        new Thread(new PutContacts(u, c)).start();
     }
 
 }

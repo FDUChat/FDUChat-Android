@@ -24,31 +24,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         initView();
-//        tv = new TextView(this);
-//        tv.setText("hello");
-//        RelativeLayout rl = (RelativeLayout)findViewById(R.id.rl1);
-//        rl.addView(tv);
-//
-//        doWork = new DoWork();
-//
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                LiteHttp client = new ApacheHttpClient(new HttpConfig(MainActivity.this));
-//                Response res = client.execute(new FileRequest("http://www.baidu.com"));
-//                Log.d(Constant.LOG_TAG, res.toString());
-//                try {
-//                    for (Integer i = 0; i < 5; ++i) {
-//                        Thread.sleep(2000);
-//                        BusProvider.getBus().post(new MyMessage(i));
-//                        BusProvider.getBus().post(new MyWork(i));
-//                    }
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }).start();
-
     }
 
     private FragmentTabHost mTabHost;

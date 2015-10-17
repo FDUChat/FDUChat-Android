@@ -108,9 +108,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void loginHandler(LoginResult result) {
         Log.d(Constant.LOG_TAG, result.id.toString());
         Toast.makeText(LoginActivity.this, result.content, Toast.LENGTH_SHORT).show();
-        if (result.isSuccessful()) {
+//        if (result.isSuccessful()) {
             navToMainActivity();
-        }
+//        }
     }
 
 }
