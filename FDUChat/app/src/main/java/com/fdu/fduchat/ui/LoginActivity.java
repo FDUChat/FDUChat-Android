@@ -74,8 +74,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View view) {
         User u = new User();
-        u.username = usernameText.getText().toString();
-        u.password = passwordText.getText().toString();
+        u.setUsername(usernameText.getText().toString());
+        u.setPassword(passwordText.getText().toString());
         switch (view.getId()) {
             case R.id.loginButton:
                 CoreProvider.getCoreInstance().getCustomData().put(Constant.CUSTOM_DATA_KEY_USER, u);
@@ -97,8 +97,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Subscribe
     public void createUserHandler(CreateUserResult result) {
-        Log.d(Constant.LOG_TAG, result.id.toString());
-        Toast.makeText(LoginActivity.this, result.content, Toast.LENGTH_SHORT).show();
+        Toast.makeText(LoginActivity.this, result.getContent(), Toast.LENGTH_SHORT).show();
         if (result.isSuccessful()) {
             navToMainActivity();
         }
@@ -106,8 +105,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Subscribe
     public void loginHandler(LoginResult result) {
-        Log.d(Constant.LOG_TAG, result.id.toString());
-        Toast.makeText(LoginActivity.this, result.content, Toast.LENGTH_SHORT).show();
+        Toast.makeText(LoginActivity.this, result.getContent(), Toast.LENGTH_SHORT).show();
 //        if (result.isSuccessful()) {
             navToMainActivity();
 //        }

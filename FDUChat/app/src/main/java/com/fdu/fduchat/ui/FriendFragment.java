@@ -71,9 +71,9 @@ public class FriendFragment extends Fragment implements View.OnClickListener{
 
     private View genTreeView() {
         TreeNode root = TreeNode.root();
-        for (Group group : contacts.contacts) {
+        for (Group group : contacts.getContacts()) {
             TreeNode groupNode = new TreeNode(group).setViewHolder(new GroupTreeNodeHolder(getActivity()));
-            for (String friend : group.friends) {
+            for (String friend : group.getFriends()) {
                 FriendTreeNodeItem item = new FriendTreeNodeItem();
                 item.friendName = friend;
                 item.group = group;
@@ -116,10 +116,9 @@ public class FriendFragment extends Fragment implements View.OnClickListener{
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                Log.d(Constant.LOG_TAG, newGroupName.getText().toString());
                                 Group newGroup = new Group();
-                                newGroup.group_name = newGroupName.getText().toString();
-                                contacts.contacts.add(newGroup);
+                                newGroup.setGroup_name(newGroupName.getText().toString());
+                                contacts.getContacts().add(newGroup);
                                 saveContacts();
                                 refreshTreeView();
                             }
@@ -152,7 +151,7 @@ public class FriendFragment extends Fragment implements View.OnClickListener{
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     String name = newFriendName.getText().toString();
                                     Log.d(Constant.LOG_TAG, name);
-                                    group.friends.add(name);
+                                    group.getFriends().add(name);
                                     saveContacts();
                                     refreshTreeView();
                                 }
@@ -163,12 +162,12 @@ public class FriendFragment extends Fragment implements View.OnClickListener{
             deleteGroupButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    contacts.contacts.remove(group);
+                    contacts.getContacts().remove(group);
                     saveContacts();
                     refreshTreeView();
                 }
             });
-            groupNameText.setText(group.group_name);
+            groupNameText.setText(group.getGroup_name());
             return view;
         }
 
@@ -195,7 +194,7 @@ public class FriendFragment extends Fragment implements View.OnClickListener{
             deleteFriendButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    item.group.friends.remove(item.friendName);
+                    item.group.getFriends().remove(item.friendName);
                     saveContacts();
                     refreshTreeView();
                 }

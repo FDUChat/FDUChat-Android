@@ -82,10 +82,10 @@ public class Core {
         @Override
         public void run() {
             JsonRequest<CreateUserResult> req = new JsonRequest(
-                    Constant.SERVER_CREATE_USER_ADDRESS + "/" + u.username, CreateUserResult.class);
+                    Constant.SERVER_CREATE_USER_ADDRESS + "/" + u.getUsername(), CreateUserResult.class);
             req.setHttpBody(new JsonBody(u));
             final CreateUserResult r = client.post(req);
-            JPushInterface.setAliasAndTags(context, u.username, null, new TagAliasCallback() {
+            JPushInterface.setAliasAndTags(context, u.getUsername(), null, new TagAliasCallback() {
                 @Override
                 public void gotResult(int i, String s, Set<String> set) {
                     if (i == 0) {
@@ -113,7 +113,7 @@ public class Core {
             );
             req.setHttpBody(new JsonBody(u));
             final LoginResult r = client.post(req);
-            JPushInterface.setAliasAndTags(context, u.username, null, new TagAliasCallback() {
+            JPushInterface.setAliasAndTags(context, u.getUsername(), null, new TagAliasCallback() {
                 @Override
                 public void gotResult(int i, String s, Set<String> set) {
                     if (i == 0) {
@@ -139,7 +139,7 @@ public class Core {
         @Override
         public void run() {
             JsonRequest<GetContactsResult> req = new JsonRequest(
-                    Constant.SERVER_GET_CONTACTS + "/" + u.username + "/contacts",
+                    Constant.SERVER_GET_CONTACTS + "/" + u.getUsername() + "/contacts",
                     GetContactsResult.class
             );
             GetContactsResult r = client.get(req);
@@ -163,7 +163,7 @@ public class Core {
         @Override
         public void run() {
             JsonRequest<PutContactsResult> req = new JsonRequest(
-                    Constant.SERVER_GET_CONTACTS + "/" + u.username + "/contacts",
+                    Constant.SERVER_GET_CONTACTS + "/" + u.getUsername() + "/contacts",
                     PutContactsResult.class
             );
             req.setHttpBody(new JsonBody(c));
