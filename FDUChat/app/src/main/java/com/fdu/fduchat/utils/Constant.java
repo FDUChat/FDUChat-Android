@@ -7,4 +7,9 @@ public class Constant {
     public static final String MAIN_ACCOUNT_PHONE = "18817875743";
     public static final String APP_ID = "8a48b55150655bee015067269fcd0733";
     public static final String APP_TOKEN = "TOKEN2de3c428f0b0cc1f689dbd31c791ea07";
+
+    public static final String MESSAGE_RECEIVED = "cn.jpush.android.intent.MESSAGE_RECEIVED";
+    public static final String KEY_TITLE = "title";
+    public static final String KEY_MESSAGE = "message";
+    public static final String KEY_EXTRAS = "extras";
 }

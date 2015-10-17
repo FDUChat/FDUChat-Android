@@ -13,8 +13,11 @@ import android.widget.TextView;
 
 import com.fdu.fduchat.R;
 import com.fdu.fduchat.backend.Core;
+import com.fdu.fduchat.backend.CoreProvider;
 import com.fdu.fduchat.model.User;
 import com.fdu.fduchat.utils.Constant;
+
+import cn.jpush.android.api.JPushInterface;
 
 /**
  * Created by HurricaneTong on 15/10/15.
@@ -69,6 +72,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+//        JPushInterface.onResume(getApplicationContext());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+//        JPushInterface.onPause(getApplicationContext());
+    }
+
+    @Override
     public void onClick(View view) {
        switch (view.getId()) {
            case R.id.loginButton:
@@ -76,12 +91,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                intent.setClass(LoginActivity.this, MainActivity.class);
                LoginActivity.this.startActivity(intent);
                LoginActivity.this.finish();
+               CoreProvider.getCoreInstance().init(getApplicationContext());
                currentUser = u1;
                anotherUser = u2;
                break;
            case R.id.loginButton2:
                currentUser = u2;
                anotherUser = u1;
+               JPushInterface.resumePush(getApplicationContext());
                break;
            case R.id.signupButton:
                User u = new User();
