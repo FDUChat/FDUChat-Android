@@ -54,21 +54,7 @@ public class Core {
     }
 
     public Core() {
-        Group g1 = new Group();
-        g1.group_name = "school";
-        g1.friends.add("slardar1");
-        g1.friends.add("slardar2");
-        g1.friends.add("slardar3");
-        Group g2 = new Group();
-        g2.group_name = "home";
-        g2.friends.add("slardar4");
-        g2.friends.add("slardar5");
-        g2.friends.add("slardar6");
-        g2.friends.add("slardar7");
-        Contacts contacts = new Contacts();
-        contacts.contacts.add(g1);
-        contacts.contacts.add(g2);
-        customData.put(Constant.CUSTOM_DATA_KEY_CONTACTS, contacts);
+
     }
 
     public void init(Context context) {
@@ -157,12 +143,7 @@ public class Core {
                     GetContactsResult.class
             );
             GetContactsResult r = client.get(req);
-            if (r == null) {
-                return;
-            }
             BusProvider.getBus().post(r);
-//            Response res = client.execute(req);
-//            Log.d(Constant.LOG_TAG, res.toString());
         }
     }
     public void getContacts(User u) {
@@ -188,11 +169,8 @@ public class Core {
             req.setHttpBody(new JsonBody(c));
 
             req.setMethod(HttpMethods.Put);
-            Response res = client.execute(req);
-            Log.d(Constant.LOG_TAG, res.toString());
-//            PutContactsResult r = client.put(req);
-//            Log.d(Constant.LOG_TAG, r.id.toString());
-//            BusProvider.getBus().post(r);
+            PutContactsResult r = client.put(req);
+            BusProvider.getBus().post(r);
         }
     }
     public void putContacts(User u, Contacts c) {

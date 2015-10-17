@@ -10,7 +10,7 @@ public class Constant {
     public static final String SERVER_ADDRESS = SERVER_IP + ":" + SERVER_PORT;
     public static final String SERVER_CREATE_USER_ADDRESS = SERVER_ADDRESS + "/users";
     public static final String SERVER_LOGIN_ADDRESS = SERVER_ADDRESS + "/login";
-    public static final String SERVER_GET_CONTACTS = SERVER_ADDRESS + "/user";
+    public static final String SERVER_GET_CONTACTS = SERVER_ADDRESS + "/users";
 
     public static final String CUSTOM_DATA_KEY_USER = "user";
     public static final String CUSTOM_DATA_KEY_CONTACTS = "contacts";

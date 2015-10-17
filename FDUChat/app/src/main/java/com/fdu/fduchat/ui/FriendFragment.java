@@ -61,8 +61,12 @@ public class FriendFragment extends Fragment implements View.OnClickListener{
         user = (User)core.getCustomData().get(Constant.CUSTOM_DATA_KEY_USER);
         core.getContacts(user);
         initView();
-//        contacts = (Contacts)core.getCustomData().get(Constant.CUSTOM_DATA_KEY_CONTACTS);
-//        refreshTreeView();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        BusProvider.getBus().unregister(this);
     }
 
     private View genTreeView() {
@@ -98,7 +102,6 @@ public class FriendFragment extends Fragment implements View.OnClickListener{
     @Subscribe
     public void getContactsHandler(GetContactsResult result) {
         contacts = result;
-        Log.d(Constant.LOG_TAG, contacts.toString());
         refreshTreeView();
     }
 
