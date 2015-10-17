@@ -6,38 +6,43 @@
     android:layout_height="match_parent" android:fitsSystemWindows="true"
     tools:context=".LoginActivity">
 
+    <android.support.design.widget.AppBarLayout android:layout_height="wrap_content"
+        android:layout_width="match_parent" android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar android:id="@+id/loginToolbar"
+            android:layout_width="match_parent" android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary" app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </android.support.design.widget.AppBarLayout>
+
     <LinearLayout
+        android:layout_marginTop="?attr/actionBarSize"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:orientation="vertical" >
+        android:orientation="vertical">
+
         <EditText
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/usernameText"/>
-        <Button
-            android:layout_width="wrap_content"
+            android:hint="Username"
+            android:id="@+id/usernameText"
+            android:textAlignment="center"/>
+        <EditText
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/signupButton"
-            android:text="signup"/>
+            android:hint="Password"
+            android:id="@+id/passwordText"
+            android:textAlignment="center"/>
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/loginButton"
             android:text="Login"/>
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/loginButton2"
-            android:text="Login2"/>
-        <EditText
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/messageText"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/sendButton"
-            android:text="Send"/>
+            android:id="@+id/signupButton"
+            android:text="Signup"/>
 
     </LinearLayout>
 

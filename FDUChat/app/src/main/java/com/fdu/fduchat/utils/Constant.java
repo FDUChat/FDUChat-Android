@@ -2,14 +2,14 @@ package com.fdu.fduchat.utils;
 
 public class Constant {
     public static final String LOG_TAG = "FDUCHAT_LOG";
-    public static final String MAIN_ACCOUNT_SID = "8a48b55150655bee015067246d2d0728";
-    public static final String MAIN_ACCOUNT_TOKEN = "7e15e0756097442f8750a2cea97f35d2";
-    public static final String MAIN_ACCOUNT_PHONE = "18817875743";
-    public static final String APP_ID = "8a48b55150655bee015067269fcd0733";
-    public static final String APP_TOKEN = "TOKEN2de3c428f0b0cc1f689dbd31c791ea07";
 
     public static final String MESSAGE_RECEIVED = "cn.jpush.android.intent.MESSAGE_RECEIVED";
-    public static final String KEY_TITLE = "title";
-    public static final String KEY_MESSAGE = "message";
-    public static final String KEY_EXTRAS = "extras";
+
+    public static final String SERVER_IP = "http://192.168.1.18";
+    public static final String SERVER_PORT = "4567";
+    public static final String SERVER_ADDRESS = SERVER_IP + ":" + SERVER_PORT;
+    public static final String SERVER_CREATE_USER_ADDRESS = SERVER_ADDRESS + "/users";
+    public static final String SERVER_LOGIN_ADDRESS = SERVER_ADDRESS + "/login";
+
+    public static final String CUSTOM_DATA_KEY_USER = "user";
 }

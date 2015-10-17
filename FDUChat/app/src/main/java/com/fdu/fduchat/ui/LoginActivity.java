@@ -10,104 +10,107 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fdu.fduchat.R;
 import com.fdu.fduchat.backend.Core;
 import com.fdu.fduchat.backend.CoreProvider;
+import com.fdu.fduchat.message.BusProvider;
+import com.fdu.fduchat.message.CreateUserResult;
+import com.fdu.fduchat.message.LoginResult;
 import com.fdu.fduchat.model.User;
 import com.fdu.fduchat.utils.Constant;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import cn.jpush.android.api.JPushInterface;
 
-/**
- * Created by HurricaneTong on 15/10/15.
- */
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
 
     private Button loginButton;
-    private Button loginButton2;
     private Button signupButton;
     private EditText usernameText;
-    private User u1;
-    private User u2;
-    private EditText messageText;
-    private Button sendButton;
-    private User currentUser;
-    private User anotherUser;
+    private EditText passwordText;
+
+    private void initView() {
+
+        loginButton = (Button)findViewById(R.id.loginButton);
+        loginButton.setOnClickListener(this);
+
+        signupButton = (Button)findViewById(R.id.signupButton);
+        signupButton.setOnClickListener(this);
+
+        usernameText = (EditText)findViewById(R.id.usernameText);
+        passwordText = (EditText)findViewById(R.id.passwordText);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        loginButton = (Button)findViewById(R.id.loginButton);
-        loginButton2 = (Button)findViewById(R.id.loginButton2);
-        signupButton = (Button)findViewById(R.id.signupButton);
-        usernameText = (EditText)findViewById(R.id.usernameText);
-        messageText = (EditText)findViewById(R.id.messageText);
-        sendButton = (Button)findViewById(R.id.sendButton);
-
-        sendButton.setOnClickListener(this);
-        signupButton.setOnClickListener(this);
-        loginButton.setOnClickListener(this);
-        loginButton2.setOnClickListener(this);
-
-        u1 = new User();
-        u1.username = "005";
-        u1.voipAccount = "8002083400000006";
-        u1.voidPwd = "kKAzTBbW";
-        u1.subToken = "580799ef488221c6996514aa0724cc9a";
-        u1.subAccountSid = "1f6eecdd740311e5bb61ac853d9d52fd";
-
-        u2 = new User();
-        u2.username = "006";
-        u2.voipAccount = "8002083400000007";
-        u2.voidPwd = "CghtmfZ3";
-        u2.subToken = "bd9dc191a18a1e0604011450b4d60577";
-        u2.subAccountSid = "6f942e2a740311e5bb61ac853d9d52fd";
-
-
-
-//        currentUser = u2;
-//        anotherUser = u1;
+        initView();
+        BusProvider.getBus().register(this);
+        CoreProvider.getCoreInstance().init(getApplicationContext());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        JPushInterface.onResume(getApplicationContext());
+//        BusProvider.getBus().register(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-//        JPushInterface.onPause(getApplicationContext());
+//        BusProvider.getBus().unregister(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        BusProvider.getBus().unregister(this);
     }
 
     @Override
     public void onClick(View view) {
-       switch (view.getId()) {
-           case R.id.loginButton:
-               Intent intent = new Intent();
-               intent.setClass(LoginActivity.this, MainActivity.class);
-               LoginActivity.this.startActivity(intent);
-               LoginActivity.this.finish();
-               CoreProvider.getCoreInstance().init(getApplicationContext());
-               currentUser = u1;
-               anotherUser = u2;
-               break;
-           case R.id.loginButton2:
-               currentUser = u2;
-               anotherUser = u1;
-               JPushInterface.resumePush(getApplicationContext());
-               break;
-           case R.id.signupButton:
-               User u = new User();
-               u.username = usernameText.getText().toString();
-               break;
-           case R.id.sendButton:
-               String msgText = messageText.getText().toString();
-               Log.d(Constant.LOG_TAG, "msg content: " + msgText);
-               break;
-       }
+        User u = new User();
+        u.username = usernameText.getText().toString();
+        u.password = passwordText.getText().toString();
+        switch (view.getId()) {
+            case R.id.loginButton:
+                CoreProvider.getCoreInstance().getCustomData().put(Constant.CUSTOM_DATA_KEY_USER, u);
+                CoreProvider.getCoreInstance().login(u);
+                break;
+            case R.id.signupButton:
+                CoreProvider.getCoreInstance().getCustomData().put(Constant.CUSTOM_DATA_KEY_USER, u);
+                CoreProvider.getCoreInstance().createUser(u);
+                break;
+        }
     }
+
+    private void navToMainActivity() {
+        Intent intent = new Intent();
+        intent.setClass(LoginActivity.this, MainActivity.class);
+        LoginActivity.this.startActivity(intent);
+        LoginActivity.this.finish();
+    }
+
+    @Subscribe
+    public void createUserHandler(CreateUserResult result) {
+        Log.d(Constant.LOG_TAG, result.id.toString());
+        Toast.makeText(LoginActivity.this, result.content, Toast.LENGTH_SHORT).show();
+        if (result.isSuccessful()) {
+            navToMainActivity();
+        }
+    }
+
+    @Subscribe
+    public void loginHandler(LoginResult result) {
+        Log.d(Constant.LOG_TAG, result.id.toString());
+        Toast.makeText(LoginActivity.this, result.content, Toast.LENGTH_SHORT).show();
+        if (result.isSuccessful()) {
+            navToMainActivity();
+        }
+    }
+
 }

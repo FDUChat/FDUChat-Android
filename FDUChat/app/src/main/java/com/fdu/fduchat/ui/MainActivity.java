@@ -7,13 +7,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TabHost;
-import android.widget.TextView;
 
 import com.fdu.fduchat.R;
 import com.fdu.fduchat.message.BusProvider;
-import com.fdu.fduchat.message.MyMessage;
 import com.squareup.otto.Subscribe;
 
 public class MainActivity extends AppCompatActivity {
@@ -101,10 +98,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Subscribe
-    public void updateTextView(MyMessage m) {
     }
 
     @Override
