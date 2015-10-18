@@ -137,6 +137,7 @@ public class Core {
                     GetContactsResult.class
             );
             GetContactsResult r = client.get(req);
+            Log.d(Constant.LOG_TAG, "post: " + r.toString());
             BusProvider.getBus().post(r);
         }
     }

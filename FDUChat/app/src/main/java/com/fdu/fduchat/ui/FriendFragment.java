@@ -104,7 +104,8 @@ public class FriendFragment extends Fragment implements View.OnClickListener{
 
     @Subscribe
     public void getContactsHandler(GetContactsResult result) {
-        core.getCustomData().put(Constant.CUSTOM_DATA_KEY_CONTACTS, result);
+        contacts.getContacts().clear();
+        contacts.getContacts().addAll(result.getContacts());
         refreshTreeView();
     }
 
