@@ -28,4 +28,12 @@ public class Contacts {
     public Contacts() {
 
     }
+
+    public ArrayList<String> getAllFriends() {
+        ArrayList<String> allFriends = new ArrayList<String>();
+        for (Group g : contacts) {
+            allFriends.addAll(g.getFriends());
+        }
+        return allFriends;
+    }
 }

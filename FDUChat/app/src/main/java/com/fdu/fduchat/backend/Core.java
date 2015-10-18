@@ -1,38 +1,31 @@
 package com.fdu.fduchat.backend;
 
-import android.accounts.Account;
-import android.app.DownloadManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.fdu.fduchat.message.BusProvider;
 import com.fdu.fduchat.message.CreateUserResult;
 import com.fdu.fduchat.message.GetContactsResult;
 import com.fdu.fduchat.message.LoginResult;
 import com.fdu.fduchat.message.PutContactsResult;
+import com.fdu.fduchat.message.SendMessageResult;
 import com.fdu.fduchat.model.Contacts;
-import com.fdu.fduchat.model.Group;
+import com.fdu.fduchat.model.ExMessage;
+import com.fdu.fduchat.model.Message;
 import com.fdu.fduchat.model.User;
-import com.fdu.fduchat.ui.LoginActivity;
-import com.fdu.fduchat.ui.MainActivity;
 import com.fdu.fduchat.utils.Constant;
 import com.litesuits.http.HttpConfig;
 import com.litesuits.http.LiteHttp;
 import com.litesuits.http.impl.apache.ApacheHttpClient;
-import com.litesuits.http.request.FileRequest;
 import com.litesuits.http.request.JsonRequest;
-import com.litesuits.http.request.StringRequest;
 import com.litesuits.http.request.content.JsonBody;
 import com.litesuits.http.request.param.HttpMethods;
 import com.litesuits.http.response.Response;
-import com.squareup.otto.Subscribe;
+import com.squareup.otto.Bus;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -41,7 +34,7 @@ import cn.jpush.android.api.TagAliasCallback;
 
 public class Core {
 
-    private MessageReceiver messageReceiver;
+    private InfoReceiver infoReceiver;
     private LiteHttp client;
     private Map<String, Object> customData = new HashMap<String, Object>();
     private static Context context;
@@ -54,7 +47,8 @@ public class Core {
     }
 
     public Core() {
-
+        customData.put(Constant.CUSTOM_DATA_KEY_CONTACTS, new Contacts());
+        customData.put(Constant.CUSTOM_DATA_KEY_CHATTINGS, new HashMap<String, ArrayList<ExMessage> >());
     }
 
     public void init(Context context) {
@@ -66,11 +60,11 @@ public class Core {
     }
 
     private void registerMessageReceiver(Context context) {
-        messageReceiver = new MessageReceiver();
+        infoReceiver = new InfoReceiver();
         IntentFilter filter = new IntentFilter();
         filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
         filter.addAction(Constant.MESSAGE_RECEIVED);
-        context.registerReceiver(messageReceiver, filter);
+        context.registerReceiver(infoReceiver, filter);
     }
 
 
@@ -175,6 +169,32 @@ public class Core {
     }
     public void putContacts(User u, Contacts c) {
         new Thread(new PutContacts(u, c)).start();
+    }
+
+    class SendMessage implements Runnable {
+
+        private Message m;
+        public SendMessage(Message m) {
+            this.m = m;
+        }
+
+        @Override
+        public void run() {
+            JsonRequest<SendMessageResult> req = new JsonRequest<SendMessageResult>(
+                    Constant.SERVER_SEND_MESSAGE_ADRESS,
+                    SendMessageResult.class
+            );
+            req.setHttpBody(new JsonBody(m));
+            SendMessageResult r = client.post(req);
+            if (r == null) {
+                Log.d(Constant.LOG_TAG, "Send message error!");
+                return;
+            }
+            BusProvider.getBus().post(r);
+        }
+    }
+    public void sendMessage(Message m) {
+        new Thread(new SendMessage(m)).start();
     }
 
 }

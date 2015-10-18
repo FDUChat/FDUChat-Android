@@ -3,6 +3,7 @@ package com.fdu.fduchat.ui;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -23,6 +24,7 @@ import com.fdu.fduchat.message.GetContactsResult;
 import com.fdu.fduchat.model.Contacts;
 import com.fdu.fduchat.model.Group;
 import com.fdu.fduchat.model.User;
+import com.fdu.fduchat.ui.chatting.ChattingActivity;
 import com.fdu.fduchat.utils.Constant;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -41,7 +43,7 @@ public class FriendFragment extends Fragment implements View.OnClickListener{
     private LinearLayout friendContainerLayout;
     private TreeNode currentRoot = null;
     private View currentTreeView = null;
-    private Contacts contacts = new Contacts();
+    private Contacts contacts;
 
     private void initView() {
         addGroupButton = (Button)getView().findViewById(R.id.addGroupButton);
@@ -59,6 +61,7 @@ public class FriendFragment extends Fragment implements View.OnClickListener{
         super.onStart();
         BusProvider.getBus().register(this);
         user = (User)core.getCustomData().get(Constant.CUSTOM_DATA_KEY_USER);
+        contacts = (Contacts)core.getCustomData().get(Constant.CUSTOM_DATA_KEY_CONTACTS);
         core.getContacts(user);
         initView();
     }
@@ -101,7 +104,7 @@ public class FriendFragment extends Fragment implements View.OnClickListener{
 
     @Subscribe
     public void getContactsHandler(GetContactsResult result) {
-        contacts = result;
+        core.getCustomData().put(Constant.CUSTOM_DATA_KEY_CONTACTS, result);
         refreshTreeView();
     }
 
@@ -188,7 +191,16 @@ public class FriendFragment extends Fragment implements View.OnClickListener{
         public View createNodeView(TreeNode node, final FriendTreeNodeItem item) {
             final LayoutInflater inflater = LayoutInflater.from(context);
             final View view = inflater.inflate(R.layout.friend_treenode, null, false);
-            TextView friendNameText = (TextView)view.findViewById(R.id.friendNameText);
+            final TextView friendNameText = (TextView)view.findViewById(R.id.friendNameText);
+            friendNameText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent();
+                    intent.setClass(getActivity(), ChattingActivity.class);
+                    intent.putExtra(Constant.INTENT_EXTRA_KEY_FRIEND, friendNameText.getText().toString());
+                    getActivity().startActivity(intent);
+                }
+            });
             Button moveFriendButton = (Button)view.findViewById(R.id.moreFriendButton);
             Button deleteFriendButton = (Button)view.findViewById(R.id.deleteFriendButton);
             deleteFriendButton.setOnClickListener(new View.OnClickListener() {

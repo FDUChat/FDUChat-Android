@@ -11,8 +11,7 @@
 
         <activity
             android:name=".ui.LoginActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -24,6 +23,12 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
+
+        <activity
+            android:name=".ui.chatting.ChattingActivity"
+            android:label="Chatting">
+        </activity>
+
 
         <!-- Required SDK核心功能-->
         <activity
@@ -72,7 +77,7 @@
         </service>
 
         <receiver
-            android:name="com.fdu.fduchat.backend.MessageReceiver"
+            android:name=".backend.InfoReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.REGISTRATION" />
