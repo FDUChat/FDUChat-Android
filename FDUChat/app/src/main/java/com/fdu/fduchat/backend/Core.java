@@ -21,8 +21,6 @@ import com.litesuits.http.impl.apache.ApacheHttpClient;
 import com.litesuits.http.request.JsonRequest;
 import com.litesuits.http.request.content.JsonBody;
 import com.litesuits.http.request.param.HttpMethods;
-import com.litesuits.http.response.Response;
-import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,10 +32,15 @@ import cn.jpush.android.api.TagAliasCallback;
 
 public class Core {
 
+    private static Context context;
     private InfoReceiver infoReceiver;
     private LiteHttp client;
     private Map<String, Object> customData = new HashMap<String, Object>();
-    private static Context context;
+    public Core() {
+        customData.put(Constant.CUSTOM_DATA_KEY_CONTACTS, new Contacts());
+        customData.put(Constant.CUSTOM_DATA_KEY_CHATTINGS, new HashMap<String, ArrayList<ExMessage> >());
+    }
+
     public static Context getApplicationContext() {
         return Core.context;
     }
@@ -46,17 +49,12 @@ public class Core {
         return customData;
     }
 
-    public Core() {
-        customData.put(Constant.CUSTOM_DATA_KEY_CONTACTS, new Contacts());
-        customData.put(Constant.CUSTOM_DATA_KEY_CHATTINGS, new HashMap<String, ArrayList<ExMessage> >());
-    }
-
     public void init(Context context) {
         JPushInterface.setDebugMode(true);
         JPushInterface.init(context);
         registerMessageReceiver(context);
         client = new ApacheHttpClient(new HttpConfig(context));
-        this.context = context;
+        Core.context = context;
     }
 
     private void registerMessageReceiver(Context context) {
@@ -67,6 +65,25 @@ public class Core {
         context.registerReceiver(infoReceiver, filter);
     }
 
+    public void createUser(User u) {
+        new Thread(new CreateUser(u)).start();
+    }
+
+    public void login(User u) {
+        new Thread(new Login(u)).start();
+    }
+
+    public void getContacts(User u) {
+        new Thread(new GetContacts(u)).start();
+    }
+
+    public void putContacts(User u, Contacts c) {
+        new Thread(new PutContacts(u, c)).start();
+    }
+
+    public void sendMessage(Message m) {
+        new Thread(new SendMessage(m)).start();
+    }
 
     class CreateUser implements Runnable {
         private User u;
@@ -75,7 +92,7 @@ public class Core {
         }
         @Override
         public void run() {
-            JsonRequest<CreateUserResult> req = new JsonRequest(
+            JsonRequest<CreateUserResult> req = new JsonRequest<CreateUserResult>(
                     Constant.SERVER_CREATE_USER_ADDRESS + "/" + u.getUsername(), CreateUserResult.class);
             req.setHttpBody(new JsonBody(u));
             final CreateUserResult r = client.post(req);
@@ -91,9 +108,6 @@ public class Core {
             });
         }
     }
-    public void createUser(User u) {
-        new Thread(new CreateUser(u)).start();
-    }
 
     class Login implements Runnable {
         private User u;
@@ -102,7 +116,7 @@ public class Core {
         }
         @Override
         public void run() {
-            JsonRequest<LoginResult> req = new JsonRequest(
+            JsonRequest<LoginResult> req = new JsonRequest<LoginResult>(
                     Constant.SERVER_LOGIN_ADDRESS, LoginResult.class
             );
             req.setHttpBody(new JsonBody(u));
@@ -119,9 +133,6 @@ public class Core {
             });
         }
     }
-    public void login(User u) {
-        new Thread(new Login(u)).start();
-    }
 
     class GetContacts implements Runnable {
 
@@ -132,17 +143,14 @@ public class Core {
 
         @Override
         public void run() {
-            JsonRequest<GetContactsResult> req = new JsonRequest(
+            JsonRequest<GetContactsResult> req = new JsonRequest<GetContactsResult>(
                     Constant.SERVER_GET_CONTACTS + "/" + u.getUsername() + "/contacts",
                     GetContactsResult.class
             );
             GetContactsResult r = client.get(req);
-            Log.d(Constant.LOG_TAG, "post: " + r.toString());
+//            Log.d(Constant.LOG_TAG, "post: " + r.toString());
             BusProvider.getBus().post(r);
         }
-    }
-    public void getContacts(User u) {
-        new Thread(new GetContacts(u)).start();
     }
 
     class PutContacts implements Runnable {
@@ -157,7 +165,7 @@ public class Core {
 
         @Override
         public void run() {
-            JsonRequest<PutContactsResult> req = new JsonRequest(
+            JsonRequest<PutContactsResult> req = new JsonRequest<PutContactsResult>(
                     Constant.SERVER_GET_CONTACTS + "/" + u.getUsername() + "/contacts",
                     PutContactsResult.class
             );
@@ -167,9 +175,6 @@ public class Core {
             PutContactsResult r = client.put(req);
             BusProvider.getBus().post(r);
         }
-    }
-    public void putContacts(User u, Contacts c) {
-        new Thread(new PutContacts(u, c)).start();
     }
 
     class SendMessage implements Runnable {
@@ -193,9 +198,6 @@ public class Core {
             }
             BusProvider.getBus().post(r);
         }
-    }
-    public void sendMessage(Message m) {
-        new Thread(new SendMessage(m)).start();
     }
 
 }
