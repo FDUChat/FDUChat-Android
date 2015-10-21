@@ -5,8 +5,8 @@ public class Constant {
 
     public static final String MESSAGE_RECEIVED = "cn.jpush.android.intent.MESSAGE_RECEIVED";
 
-    public static final String SERVER_IP = "http://192.168.1.18";
-    public static final String SERVER_PORT = "4567";
+    public static final String SERVER_IP = "http://45.32.251.133";
+    public static final String SERVER_PORT = "80";
     public static final String SERVER_ADDRESS = SERVER_IP + ":" + SERVER_PORT;
     public static final String SERVER_CREATE_USER_ADDRESS = SERVER_ADDRESS + "/users";
     public static final String SERVER_LOGIN_ADDRESS = SERVER_ADDRESS + "/login";

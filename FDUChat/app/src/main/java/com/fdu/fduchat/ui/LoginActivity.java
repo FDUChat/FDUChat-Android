@@ -106,9 +106,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Subscribe
     public void loginHandler(LoginResult result) {
         Toast.makeText(LoginActivity.this, result.getContent(), Toast.LENGTH_SHORT).show();
-//        if (result.isSuccessful()) {
+        if (result.isSuccessful()) {
             navToMainActivity();
-//        }
+        }
     }
 
 }
